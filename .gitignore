@@ -17,7 +17,7 @@ node_modules
 # Build dirs
 .next
 /build
-/dist
+# DO include /dist, so we can install from git, in our Next app package.json
 /www/build
 
 # Generated files
