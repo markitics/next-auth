@@ -25,3 +25,24 @@ export default (url) => {
     basePath
   }
 }
+
+export const absoluteUrl = (req, setLocalhost) => {
+  // copied from https://github.com/SharadKumar/next-auth/commit/1b61b36fcaef2c200f4a097d95f97407daee6fad
+  // explained on https://github.com/nextauthjs/next-auth/issues/600#issuecomment-680926829
+  // and https://github.com/nextauthjs/next-auth/issues/497 
+  // NB: using req host has some security risk!
+  var protocol = "https:"
+  var host = req
+    ? req.headers["x-forwarded-host"] || req.headers["host"]
+    : window.location.host
+
+  if (host.indexOf("localhost") > -1 || host.indexOf(".local") > -1) {
+    // if (setLocalhost) host = setLocalhost
+    protocol = "http:"
+  }
+  return {
+    protocol: protocol,
+    host: host,
+    origin: protocol + "//" + host,
+  }
+} 
