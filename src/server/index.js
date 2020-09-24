@@ -57,7 +57,7 @@ export default async (req, res, userSuppliedOptions) => {
       // return allowedList.includes(domain) || domain.includes('markitics.vercel.app') // the latter should apply to all preview URLs
     }
     let parsedUrl;
-    if(origin && validateOrigin(origin.host)){
+    if(origin && validateOrigin(origin)){
       parsedUrl = parseUrl(origin)
     }else{
       if (!process.env.NEXTAUTH_URL) {
@@ -69,6 +69,7 @@ export default async (req, res, userSuppliedOptions) => {
 
     // @todo refactor all existing references to site, baseUrl and basePath
     const baseUrl = parsedUrl.baseUrl
+    // const baseUrl = req.headers.host; 
     const basePath = parsedUrl.basePath
 
     // Parse database / adapter

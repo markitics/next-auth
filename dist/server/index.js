@@ -77,14 +77,13 @@ var _default = function () {
         } = (0, _parseUrl.absoluteUrl)(req);
 
         var validateOrigin = domain => {
-          var allowedList = ['listen.markmoriarty.com', 'web.awesound.app', 'listen.aroramedicaleducation.co.uk', 'app.awesound.com'];
-          return allowedList.includes(domain);
+          return true;
         };
 
         var parsedUrl;
 
-        if (origin && validateOrigin(origin.host)) {
-          parsedUrl = (0, _parseUrl.default)(origin || process.env.NEXTAUTH_URL || process.env.VERCEL_URL);
+        if (origin && validateOrigin(origin)) {
+          parsedUrl = (0, _parseUrl.default)(origin);
         } else {
           if (!process.env.NEXTAUTH_URL) {
             _logger.default.warn('NEXTAUTH_URL', 'NEXTAUTH_URL environment variable not set');

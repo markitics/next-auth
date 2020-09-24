@@ -32,8 +32,7 @@ export const absoluteUrl = (req, setLocalhost) => {
   // and https://github.com/nextauthjs/next-auth/issues/497 
   // NB: using req host has some security risk!
   var protocol = "https:"
-  var host = req
-    ? req.headers["x-forwarded-host"] || req.headers["host"]
+  var host = req  ? req.headers["x-forwarded-host"] || req.headers["host"]
     : window.location.host
 
   if (host.indexOf("localhost") > -1 || host.indexOf(".local") > -1) {
