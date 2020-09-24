@@ -77,7 +77,8 @@ var _default = function () {
         } = (0, _parseUrl.absoluteUrl)(req);
 
         var validateOrigin = domain => {
-          return true;
+          var allowedList = ['listen.markmoriarty.com', 'web.awesound.app', 'listen.aroramedicaleducation.co.uk', 'app.awesound.com'];
+          return allowedList.includes(domain) || domain.includes('markitics.vercel.app');
         };
 
         var parsedUrl;

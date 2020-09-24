@@ -50,11 +50,11 @@ export default async (req, res, userSuppliedOptions) => {
     const { origin } = absoluteUrl(req)
     const validateOrigin = (domain)=>{
       // temp: allow all origin URLs
-      return true
+      // return true
       // @ToDo: move allowedList to be read from our Next.js app, rather than here hard-coded in this codebase
       // Check against approved list of domains
-      // const allowedList = ['listen.markmoriarty.com', 'web.awesound.app', 'listen.aroramedicaleducation.co.uk', 'app.awesound.com']
-      // return allowedList.includes(domain) || domain.includes('markitics.vercel.app') // the latter should apply to all preview URLs
+      const allowedList = ['listen.markmoriarty.com', 'web.awesound.app', 'listen.aroramedicaleducation.co.uk', 'app.awesound.com']
+      return allowedList.includes(domain) || domain.includes('markitics.vercel.app') // the latter should apply to all preview URLs
     }
     let parsedUrl;
     if(origin && validateOrigin(origin)){
