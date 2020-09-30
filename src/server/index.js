@@ -48,7 +48,7 @@ export default async (req, res, userSuppliedOptions) => {
     // To work properly in production with OAuth providers the NEXTAUTH_URL environment variable must be set.
     const { origin } = absoluteUrl(req);
     const validateOrigin = (domain) => {
-      console.log("domain to validate (for NextAuth) is ", domain);
+      console.log("domain to validate [for NextAuth] is ", domain);
       // temp: allow all origin URLs
       // return true
       // @ToDo: move allowedList to be read from our Next.js app, rather than here hard-coded in this codebase
@@ -60,10 +60,13 @@ export default async (req, res, userSuppliedOptions) => {
         "https://app.awesound.com",
         "https://local.awesound.com:3000",
         "http://local.awesound.com:3000",
+        "local.awesound.com:3000",
       ];
-      return (
-        allowedList.includes(domain) || domain.includes("markitics.vercel.app")
-      ); // the latter should apply to all preview URLs
+      const domainAllowed =
+        allowedList.includes(domain) ||
+        domain.slice(-21) == ".markitics.vercel.app"; // to allow preview URLs
+      console.log("domainAllowed result is ", domainAllowed);
+      return domainAllowed;
     };
     let parsedUrl;
     if (origin && validateOrigin(origin)) {

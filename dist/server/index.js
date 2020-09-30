@@ -78,8 +78,10 @@ var _default = function () {
 
         var validateOrigin = domain => {
           console.log("domain to validate (for NextAuth) is ", domain);
-          var allowedList = ["listen.markmoriarty.com", "web.awesound.app", "listen.aroramedicaleducation.co.uk", "app.awesound.com", "local.awesound.com:8000"];
-          return allowedList.includes(domain) || domain.includes("markitics.vercel.app");
+          var allowedList = ["https://listen.markmoriarty.com", "https://web.awesound.app", "https://listen.aroramedicaleducation.co.uk", "https://app.awesound.com", "https://local.awesound.com:3000", "http://local.awesound.com:3000", "local.awesound.com:3000"];
+          var domainAllowed = allowedList.includes(domain) || domain.slice(-21) == ".markitics.vercel.app";
+          console.log("domainAllowed result is ", domainAllowed);
+          return domainAllowed;
         };
 
         var parsedUrl;
