@@ -73,12 +73,13 @@ var _default = function () {
           csrfToken: csrfTokenFromPost
         } = body;
         var {
-          origin
+          origin,
+          host: domain
         } = (0, _parseUrl.absoluteUrl)(req);
 
         var validateOrigin = domain => {
-          console.log("domain to validate (for NextAuth) is ", domain);
-          var allowedList = ["https://listen.markmoriarty.com", "https://web.awesound.app", "https://listen.aroramedicaleducation.co.uk", "https://app.awesound.com", "https://local.awesound.com:3000", "http://local.awesound.com:3000", "local.awesound.com:3000"];
+          console.log("domain to validate [for NextAuth] is ", domain);
+          var allowedList = ["listen.markmoriarty.com", "web.awesound.app", "listen.aroramedicaleducation.co.uk", "app.awesound.com", "local.awesound.com:3000"];
           var domainAllowed = allowedList.includes(domain) || domain.slice(-21) == ".markitics.vercel.app";
           console.log("domainAllowed result is ", domainAllowed);
           return domainAllowed;
@@ -86,7 +87,7 @@ var _default = function () {
 
         var parsedUrl;
 
-        if (origin && validateOrigin(origin)) {
+        if (origin && domain && validateOrigin(domain)) {
           parsedUrl = (0, _parseUrl.default)(origin);
         } else {
           if (!process.env.NEXTAUTH_URL) {

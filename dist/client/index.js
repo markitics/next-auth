@@ -9,7 +9,11 @@ var _react = require("react");
 
 var _logger = _interopRequireDefault(require("../lib/logger"));
 
-var _parseUrl = _interopRequireDefault(require("../lib/parse-url"));
+var _parseUrl = _interopRequireWildcard(require("../lib/parse-url"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,21 +40,21 @@ var __NEXTAUTH = {
   _getSession: () => {}
 };
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   if (__NEXTAUTH._eventListenersAdded === false) {
     __NEXTAUTH._eventListenersAdded = true;
-    window.addEventListener('storage', function () {
+    window.addEventListener("storage", function () {
       var _ref = _asyncToGenerator(function* (event) {
-        if (event.key === 'nextauth.message') {
+        if (event.key === "nextauth.message") {
           var message = JSON.parse(event.newValue);
 
-          if (message.event && message.event === 'session' && message.data) {
+          if (message.event && message.event === "session" && message.data) {
             if (__NEXTAUTH._clientId === message.clientId) {
               return;
             }
 
             yield __NEXTAUTH._getSession({
-              event: 'storage'
+              event: "storage"
             });
           }
         }
@@ -60,10 +64,10 @@ if (typeof window !== 'undefined') {
         return _ref.apply(this, arguments);
       };
     }());
-    window.addEventListener('focus', function () {
+    window.addEventListener("focus", function () {
       var _ref2 = _asyncToGenerator(function* (event) {
         return __NEXTAUTH._getSession({
-          event: 'focus'
+          event: "focus"
         });
       });
 
@@ -71,10 +75,10 @@ if (typeof window !== 'undefined') {
         return _ref2.apply(this, arguments);
       };
     }());
-    window.addEventListener('blur', function () {
+    window.addEventListener("blur", function () {
       var _ref3 = _asyncToGenerator(function* (event) {
         return __NEXTAUTH._getSession({
-          event: 'blur'
+          event: "blur"
         });
       });
 
@@ -108,7 +112,7 @@ var setOptions = function setOptions() {
   if (keepAlive) {
     __NEXTAUTH.keepAlive = keepAlive;
 
-    if (typeof window !== 'undefined' && keepAlive > 0) {
+    if (typeof window !== "undefined" && keepAlive > 0) {
       if (__NEXTAUTH._clientSyncTimer !== null) {
         clearTimeout(__NEXTAUTH._clientSyncTimer);
       }
@@ -116,7 +120,7 @@ var setOptions = function setOptions() {
       __NEXTAUTH._clientSyncTimer = setTimeout(_asyncToGenerator(function* () {
         if (__NEXTAUTH._clientSession) {
           yield __NEXTAUTH._getSession({
-            event: 'timer'
+            event: "timer"
           });
         }
       }), keepAlive * 1000);
@@ -136,20 +140,20 @@ var getSession = function () {
       req = ctx.req;
     }
 
-    var baseUrl = _apiBaseUrl();
-
+    var baseUrl = (0, _parseUrl.absoluteUrl)(req).origin + "/api/auth";
     var fetchOptions = req ? {
       headers: {
         cookie: req.headers.cookie
       }
     } : {};
+    console.log("Going to call getSession now, with baseUrl ", baseUrl);
     var session = yield _fetchData("".concat(baseUrl, "/session"), fetchOptions);
 
     if (triggerEvent) {
       _sendMessage({
-        event: 'session',
+        event: "session",
         data: {
-          trigger: 'getSession'
+          trigger: "getSession"
         }
       });
     }
@@ -225,7 +229,7 @@ var _useSessionHook = session => {
 
       try {
         var triggredByEvent = event !== null;
-        var triggeredByStorageEvent = !!(event && event === 'storage');
+        var triggeredByStorageEvent = !!(event && event === "storage");
         var clientMaxAge = __NEXTAUTH.clientMaxAge;
         var clientLastSync = parseInt(__NEXTAUTH._clientLastSync);
         var currentTime = Math.floor(new Date().getTime() / 1000);
@@ -254,7 +258,7 @@ var _useSessionHook = session => {
         setData(newClientSessionData);
         setLoading(false);
       } catch (error) {
-        _logger.default.error('CLIENT_USE_SESSION_ERROR', error);
+        _logger.default.error("CLIENT_USE_SESSION_ERROR", error);
       }
     });
 
@@ -282,11 +286,11 @@ var signIn = function () {
     if (!provider || !providers[provider]) {
       window.location = "".concat(baseUrl, "/signin?callbackUrl=").concat(encodeURIComponent(callbackUrl));
     } else {
-      var signInUrl = providers[provider].type === 'credentials' ? "".concat(baseUrl, "/callback/").concat(provider) : "".concat(baseUrl, "/signin/").concat(provider);
+      var signInUrl = providers[provider].type === "credentials" ? "".concat(baseUrl, "/callback/").concat(provider) : "".concat(baseUrl, "/signin/").concat(provider);
       var fetchOptions = {
-        method: 'post',
+        method: "post",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          "Content-Type": "application/x-www-form-urlencoded"
         },
         body: _encodedForm(_objectSpread(_objectSpread({}, args), {}, {
           csrfToken: yield getCsrfToken(),
@@ -313,9 +317,9 @@ var signOut = function () {
     var baseUrl = _apiBaseUrl();
 
     var fetchOptions = {
-      method: 'post',
+      method: "post",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        "Content-Type": "application/x-www-form-urlencoded"
       },
       body: _encodedForm({
         csrfToken: yield getCsrfToken(),
@@ -327,9 +331,9 @@ var signOut = function () {
     var data = yield res.json();
 
     _sendMessage({
-      event: 'session',
+      event: "session",
       data: {
-        trigger: 'signout'
+        trigger: "signout"
       }
     });
 
@@ -362,7 +366,7 @@ var _fetchData = function () {
       var data = yield res.json();
       return Promise.resolve(Object.keys(data).length > 0 ? data : null);
     } catch (error) {
-      _logger.default.error('CLIENT_FETCH_ERROR', url, error);
+      _logger.default.error("CLIENT_FETCH_ERROR", url, error);
 
       return Promise.resolve(null);
     }
@@ -374,9 +378,9 @@ var _fetchData = function () {
 }();
 
 var _apiBaseUrl = () => {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     if (!process.env.NEXTAUTH_URL) {
-      _logger.default.warn('NEXTAUTH_URL', 'NEXTAUTH_URL environment variable not set');
+      _logger.default.warn("NEXTAUTH_URL", "In client/index.js: _apiBaseUrl, NEXTAUTH_URL environment variable not set");
     }
 
     return "".concat(__NEXTAUTH.baseUrl).concat(__NEXTAUTH.basePath);
@@ -387,14 +391,14 @@ var _apiBaseUrl = () => {
 
 var _encodedForm = formData => {
   return Object.keys(formData).map(key => {
-    return encodeURIComponent(key) + '=' + encodeURIComponent(formData[key]);
-  }).join('&');
+    return encodeURIComponent(key) + "=" + encodeURIComponent(formData[key]);
+  }).join("&");
 };
 
 var _sendMessage = message => {
-  if (typeof localStorage !== 'undefined') {
+  if (typeof localStorage !== "undefined") {
     var timestamp = Math.floor(new Date().getTime() / 1000);
-    localStorage.setItem('nextauth.message', JSON.stringify(_objectSpread(_objectSpread({}, message), {}, {
+    localStorage.setItem("nextauth.message", JSON.stringify(_objectSpread(_objectSpread({}, message), {}, {
       clientId: __NEXTAUTH._clientId,
       timestamp
     })));

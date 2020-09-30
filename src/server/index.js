@@ -46,7 +46,7 @@ export default async (req, res, userSuppliedOptions) => {
     // START of custom code to let NEXTAUTH_URL be dynamic
     // Note, this is only good for our custom email+password login;
     // To work properly in production with OAuth providers the NEXTAUTH_URL environment variable must be set.
-    const { origin } = absoluteUrl(req);
+    const { origin, host: domain } = absoluteUrl(req);
     const validateOrigin = (domain) => {
       console.log("domain to validate [for NextAuth] is ", domain);
       // temp: allow all origin URLs
@@ -54,12 +54,10 @@ export default async (req, res, userSuppliedOptions) => {
       // @ToDo: move allowedList to be read from our Next.js app, rather than here hard-coded in this codebase
       // Check against approved list of domains
       const allowedList = [
-        "https://listen.markmoriarty.com",
-        "https://web.awesound.app",
-        "https://listen.aroramedicaleducation.co.uk",
-        "https://app.awesound.com",
-        "https://local.awesound.com:3000",
-        "http://local.awesound.com:3000",
+        "listen.markmoriarty.com",
+        "web.awesound.app",
+        "listen.aroramedicaleducation.co.uk",
+        "app.awesound.com",
         "local.awesound.com:3000",
       ];
       const domainAllowed =
@@ -69,15 +67,20 @@ export default async (req, res, userSuppliedOptions) => {
       return domainAllowed;
     };
     let parsedUrl;
-    if (origin && validateOrigin(origin)) {
+    if (origin && domain && validateOrigin(domain)) {
       parsedUrl = parseUrl(origin);
     } else {
+      console.log("origin: ", origin);
+      console.log("domain: ", domain);
+      console.log("validateOrigin(domain): ", validateOrigin(domain));
       if (!process.env.NEXTAUTH_URL) {
         logger.warn(
           "NEXTAUTH_URL",
-          "NEXTAUTH_URL environment variable not set"
+          "In server/index.js, NEXTAUTH_URL environment variable not set"
         );
-        console.log("NEXTAUTH_URL environment variable not set");
+        console.log(
+          "In server/index.js, alas NEXTAUTH_URL environment variable not set"
+        );
       }
       parsedUrl = parseUrl(process.env.NEXTAUTH_URL || process.env.VERCEL_URL);
     }
